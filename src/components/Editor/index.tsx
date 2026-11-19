@@ -12,6 +12,7 @@ import { createSaver } from "@/utils/saver";
 import type { PageData } from "@/shared/type";
 import config from "urodele.config";
 import toast from "../Toast";
+import { withBase } from "@/utils/base";
 import { mount as mountOutline } from "@/components/Outline";
 import { useDialog } from "../Dialog";
 
@@ -113,7 +114,7 @@ export const mount = async (selector: string, operationSelector: string) => {
         toast(`${draft ? "Save" : "Publish"} success`);
         await saver.clean(pagePath);
         if (isCreate) {
-          location.replace(`/edit?path=${path}`);
+          location.replace(withBase(`/edit?path=${path}`));
         }
       } catch (err) {
         toast(`${draft ? "Save" : "Publish"} error: ${err}`, "error");
@@ -221,7 +222,7 @@ export const mount = async (selector: string, operationSelector: string) => {
         setAttar({ "data-loading": true, disabled: true });
         await deletePageByPath(pagePath, recursive ? assets : []);
         await toast("Delete success!");
-        location.replace("/");
+        location.replace(withBase("/"));
       } catch (error) {
         toast(`delete failed: ${error}`);
       } finally {

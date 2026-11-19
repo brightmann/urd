@@ -1,40 +1,58 @@
-name: GitHub Actions Build and Deploy
+# Build the Astro site and deploy it to GitHub Pages (project site:
+# https://brightmann.github.io/urd). Uses the built-in GITHUB_TOKEN,
+# no personal token needed. Requires the repo's Pages source to be
+# set to "GitHub Actions" (Settings -> Pages).
+name: Deploy to GitHub Pages
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
-        with:
-          persist-credentials: false
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install pnpm 📦
-        uses: pnpm/action-setup@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
-          run_install: false
+          version: 9
 
-      - name: Setup Node.js 🔧
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'pnpm'
+          node-version: 22
+          cache: pnpm
 
-      - name: Install and Build 🔨
+      - name: Install and build
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm run build
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: dist
-          CLEAN: true
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

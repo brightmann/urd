@@ -1,5 +1,6 @@
 import { config } from "urodele.config";
 import { login } from "./Auth/auth";
+import { withBase } from "@/utils/base";
 
 export const mount = async () => {
   const url = new URL(location.href);
@@ -22,6 +23,6 @@ export const mount = async () => {
     alert(error.message);
     console.error(error);
   } finally {
-    location.replace("/");
+    location.replace(withBase("/"));
   }
 };

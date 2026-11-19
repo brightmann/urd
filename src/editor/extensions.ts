@@ -10,12 +10,38 @@ import Heading from "./heading.ts";
 import StarterKit from "@tiptap/starter-kit";
 import { createLowlightCodeSSRPlugin, hydrate } from "./lowlight.tsx";
 import { createPlaceholderPlugin } from "./placeholder";
+import { withBase } from "@/utils/base";
+
+// Rendered image/link urls get the site base prefix (e.g. /urd) so they
+// resolve under a subpath deploy. The stored JSON keeps the root-relative
+// form ('/post-assets/...'), only the rendered HTML is prefixed.
+const CustomImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      src: {
+        default: null,
+        renderHTML: (attributes) => {
+          const src = attributes.src as string | undefined;
+          return { src: src ? withBase(src) : src };
+        },
+      },
+    };
+  },
+});
 
 const CustomLink = Link.extend({
   // 可以在这里添加或修改属性逻辑
   addAttributes() {
     return {
       ...this.parent?.(),
+      href: {
+        default: null,
+        renderHTML: (attributes) => {
+          const href = attributes.href as string | undefined;
+          return { href: href ? withBase(href) : href };
+        },
+      },
       target: {
         default: '_blank',
         // 关键点：动态渲染 target 属性
@@ -47,7 +73,7 @@ export const getBasicExtensions = () => {
       heading: false,
     }),
     Heading,
-    Image,
+    CustomImage,
     CustomLink.configure({
       autolink: false,
     }),

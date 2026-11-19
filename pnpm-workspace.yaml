@@ -1,0 +1,8 @@
+# pnpm blocks postinstall scripts by default; these are the build tools
+# Astro needs (esbuild ships its platform binary via postinstall, sharp
+# downloads libvips, @parcel/watcher builds its native binding).
+# Without this, `pnpm install` fails on a fresh checkout (incl. CI).
+allowBuilds:
+  "@parcel/watcher": true
+  esbuild: true
+  sharp: true

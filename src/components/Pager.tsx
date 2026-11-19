@@ -1,5 +1,6 @@
 import * as React from "jsx-dom";
 import { getGlobalData } from "../utils/data";
+import { withBase } from "../utils/base";
 
 // 根据url中的fromTag参数确定上一篇&下一篇文章
 export const mount = async (navSelector: string, dataSelector: string) => {
@@ -19,7 +20,7 @@ export const mount = async (navSelector: string, dataSelector: string) => {
   root?.replaceChildren(
     ...[
       prev ? (
-        <a href={`/post/${prev.id}?fromTag=${tag}`} class="flex items-center gap-1 text-blue cursor-pointer flex-[45%]">
+        <a href={withBase(`/post/${prev.id}?fromTag=${tag}`)} class="flex items-center gap-1 text-blue cursor-pointer flex-[45%]">
           <div class="i-ri:arrow-left-double-line w-5 h-5 flex-shrink-0" />
           <div>{prev.title}</div>
         </a>
@@ -28,7 +29,7 @@ export const mount = async (navSelector: string, dataSelector: string) => {
       ),
       next ? (
         <a
-          href={`/post/${next.id}?fromTag=${tag}`}
+          href={withBase(`/post/${next.id}?fromTag=${tag}`)}
           class="flex items-center justify-end gap-1 text-blue cursor-pointer flex-[45%]">
           <div>{next.title}</div>
           <div class="i-ri:arrow-right-double-line w-5 h-5 flex-shrink-0" />

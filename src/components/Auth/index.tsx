@@ -3,6 +3,7 @@ import { useDialog } from "../Dialog";
 import { cn, useAttrRef } from "@/utils/dom";
 import { getUserInfo, login, logout } from "./auth.js";
 import { getGlobalData } from "@/utils/data.js";
+import { withBase, stripBase } from "@/utils/base";
 import { formatSecond } from "@/shared/time.js";
 import styles from "./style.module.scss";
 import config from "urodele.config";
@@ -115,22 +116,23 @@ const Profile = (user: UserInfo) => {
     dialog.show();
   };
   const canEdit = Boolean(user.permissions?.push);
-  const isHome = location.pathname === "/";
-  const isIndex = isHome || /^\/\d+$/.test(location.pathname);
-  const isPage = location.pathname.startsWith("/post");
-  const pageId = location.pathname.replace("/post/", "");
+  const path = stripBase(location.pathname);
+  const isHome = path === "/";
+  const isIndex = isHome || /^\/\d+$/.test(path);
+  const isPage = path.startsWith("/post");
+  const pageId = path.replace("/post/", "");
   if (canEdit && isHome) {
     handleDraft();
   }
   return (
     <div class="flex gap-2">
       {canEdit && isIndex && (
-        <a href="/edit?new" class="text-button" aria-label="create new post">
+        <a href={withBase("/edit?new")} class="text-button" aria-label="create new post">
           <div class="i-ri:add-large-line"></div>
         </a>
       )}
       {canEdit && isPage && (
-        <a href={`/edit?path=${pageId}`} class="text-button" aria-label="edit current post">
+        <a href={withBase(`/edit?path=${pageId}`)} class="text-button" aria-label="edit current post">
           <div class="i-ri:quill-pen-fill"></div>
         </a>
       )}
@@ -165,18 +167,18 @@ const handleDraft = async () => {
     const dom = (
       <>
         <div data-page-draft="verified" class="pt-8 pb-2">
-          <a href={`/post/${item.id}`} class="px-4 pb-4 flex justify-between items-center group">
+          <a href={withBase(`/post/${item.id}`)} class="px-4 pb-4 flex justify-between items-center group">
             <div class="flex flex-col">
               <h1 class="page-title w-[fit-content] text-lg transition-all font-semibold group-hover:underline">
                 {item.title}
               </h1>
               <p class="text-text text-opacity-60 text-sm">{item.intro}</p>
             </div>
-            {item.cover && <img class="w-16 h-16 rounded object-cover" src={item.cover.src} alt={item.cover.alt} />}
+            {item.cover && <img class="w-16 h-16 rounded object-cover" src={withBase(item.cover.src)} alt={item.cover.alt} />}
           </a>
           <div class="flex pt-2 gap-2 px-4">
             {item.tags.map((tag) => (
-              <a href={`/tag/${encodeURIComponent(tag)}`} class="text-sm text-gray hover:text-black">
+              <a href={withBase(`/tag/${encodeURIComponent(tag)}`)} class="text-sm text-gray hover:text-black">
                 #{tag}
               </a>
             ))}

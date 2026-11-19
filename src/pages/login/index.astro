@@ -1,5 +1,5 @@
 ---
-
+import { withBase } from "@/utils/base";
 ---
 
 <script>
@@ -10,7 +10,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/favicon.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href={withBase("/favicon.png")} />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -21,7 +21,7 @@
       content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <meta name="description" content={"A self-owned full-static blog system"} />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href={withBase("/favicon.ico")} />
     <title>{["Urodele", "login"].reverse().join(" | ")}</title>
   </head>
   <body class="text-text bg-bg flex items-center justify-center m-4">

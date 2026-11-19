@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { getPageList } from "@/pages/api/post/list";
+import { withBase } from "@/utils/base";
 
 const tag = (Astro.params as any).tag;
 
@@ -37,7 +38,7 @@ export const getStaticPaths = async () => {
         posts.map((item) => (
           <>
             <div class="w-full group pt-8 pb-2">
-              <a href={`/post/${item.id}?fromTag=${tag}`} class="px-4 pb-4  flex flex-col w-full">
+              <a href={withBase(`/post/${item.id}?fromTag=${tag}`)} class="px-4 pb-4  flex flex-col w-full">
                 <div class="text-lg transition-all font-semibold group-hover:underline">{item.title}</div>
                 <div class="text-text text-opacity-60 text-sm">{item.intro}</div>
               </a>
@@ -47,7 +48,7 @@ export const getStaticPaths = async () => {
           </>
         ))
       }
-      <a href="/tag" class="mt-4 text-blue"> All Tags </a>
+      <a href={withBase("/tag")} class="mt-4 text-blue"> All Tags </a>
     </div>
   </main>
 </Layout>
