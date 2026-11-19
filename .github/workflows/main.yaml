@@ -28,7 +28,10 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          # pnpm 9 fails `pnpm store path` (used by setup-node's pnpm
+          # cache) with "packages field missing or empty" on this repo;
+          # pnpm 12 works (same version as the local build).
+          version: 12
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
