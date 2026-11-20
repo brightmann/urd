@@ -28,26 +28,11 @@ export const mount = async (selector: string, operationSelector: string) => {
   const isCreate = url.searchParams.has("new");
   const pagePath = url.searchParams.get("path") ?? undefined;
 
-  const progress = (msg: string) => {
-    const el = root.querySelector<HTMLElement>("[data-progress]");
-    if (el) {
-      el.textContent = msg;
-      return;
-    }
-    const div = document.createElement("div");
-    div.setAttribute("data-progress", "");
-    div.className = "text-xs text-gray p-2";
-    div.textContent = msg;
-    root.appendChild(div);
-  };
-
-  progress("loading post list…");
   const globalData = await getGlobalData();
 
   const saver = createSaver();
 
   const { editor, tagEditor, initial } = await (async () => {
-    progress("loading autosave…");
     const saved = await saver.read(pagePath);
     const { data: savedPageData } = saved ? await transformSaved(saved) : {};
 
@@ -64,9 +49,7 @@ export const mount = async (selector: string, operationSelector: string) => {
     const wrapper = (
       <div class="editor-wrapper w-full max-w-[960px] flex justify-center">{filed}</div>
     ) as HTMLDivElement;
-    progress("building tag editor…");
     const tagEditor = await createTagEditor(filed, pageDat?.tags ?? []);
-    progress("building editor…");
     const editor = createEditor(filed, pageDat?.content ?? "");
     wrapper.appendChild(<div class="outline-wrapper"></div>);
     root.appendChild(wrapper);
