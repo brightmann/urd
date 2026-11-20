@@ -6,6 +6,7 @@ import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
+import Youtube from "@tiptap/extension-youtube";
 import Heading from "./heading.ts";
 import StarterKit from "@tiptap/starter-kit";
 import { createLowlightCodeSSRPlugin, hydrate } from "./lowlight.tsx";
@@ -80,6 +81,12 @@ export const getBasicExtensions = () => {
     Underline,
     TaskList,
     TaskItem,
+    // YouTube embeds: posts store {"type":"youtube","attrs":{"src": watch-url}};
+    // renders a plain <iframe> (no sandbox/referrerPolicy — those break playback).
+    Youtube.configure({
+      width: 813,
+      height: 457,
+    }),
     //   ssr ? createLowlightCodeSSRPlugin() : createLowlightCodePlugin(),
     createPlaceholderPlugin(),
   ];
