@@ -35,3 +35,18 @@ import Layout from "@/layouts/Layout.astro";
   <div slot="operations" id="editor-operarions" class="flex gap-2 items-center"></div>
   <div id="editor" class="w-full flex flex-col items-center min-h-8" data-modal-loading="true"></div>
 </Layout>
+
+<!-- Classic inline script (no imports, runs during parsing, before the
+  module bundle): proves the page's JS started at all. If the module
+  bundle fails to import/evaluate, this marker is all that appears. -->
+<script>
+  (function () {
+    var root = document.querySelector("#editor");
+    if (!root) return;
+    var div = document.createElement("div");
+    div.setAttribute("data-boot", "");
+    div.className = "text-xs text-gray p-2";
+    div.textContent = "page script started…";
+    root.appendChild(div);
+  })();
+</script>
