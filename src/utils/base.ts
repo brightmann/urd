@@ -1,6 +1,7 @@
 // Base path support: the site runs at the domain root by default,
 // or under a subpath (e.g. /urd on GitHub Pages project sites).
-// import.meta.env.BASE_URL is '/urd/' when `base` is set in astro.config,
+// import.meta.env.BASE_URL is '/urd' when `base` is set in astro.config
+// (no trailing slash — see utils/data.ts for why that matters),
 // '/' otherwise. Stored content (post JSON, image urls) keeps the
 // root-relative form '/post-assets/...'; only rendered links/urls get
 // the base prefix, so the stored data never changes.
