@@ -5,7 +5,30 @@ import Layout from "@/layouts/Layout.astro";
 <script>
   import { mount } from "@/components/Editor";
 
-  mount("#editor", "#editor-operarions");
+  // The editor mount has several async steps (post list, autosave store,
+  // editor init) and no error handling: any failure left the page on the
+  // loading spinner forever with no message. Surface the failure instead.
+  const showEditorError = (message: string) => {
+    const root = document.querySelector<HTMLElement>("#editor");
+    // Only report while the editor is still loading; once it mounted,
+    // unrelated errors (e.g. a background login refresh) must not draw
+    // a bogus "failed to load" box.
+    if (!root || !root.hasAttribute("data-modal-loading")) return;
+    root.removeAttribute("data-modal-loading");
+    root.innerHTML = "";
+    const box = document.createElement("div");
+    box.className = "w-full max-w-[960px] p-4 m-4 rounded bg-red-100 text-red-800 text-sm";
+    box.textContent = `Editor failed to load: ${message}`;
+    root.appendChild(box);
+  };
+  window.addEventListener("error", (event) => showEditorError(event.message));
+  window.addEventListener("unhandledrejection", (event) => {
+    showEditorError(event.reason instanceof Error ? event.reason.message : String(event.reason));
+  });
+
+  mount("#editor", "#editor-operarions").catch((err: unknown) => {
+    showEditorError(err instanceof Error ? err.message : String(err));
+  });
 </script>
 
 <Layout title="Editor" footer={false}>
