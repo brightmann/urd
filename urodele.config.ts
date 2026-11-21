@@ -15,7 +15,7 @@ export const config = {
     copyrightUrl: "https://github.com/glink25",
   },
   pagination: {
-    size: 10,
+    size: 5,
   },
   giscus: false as object | false,
 } as const;
