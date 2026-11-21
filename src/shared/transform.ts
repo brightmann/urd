@@ -39,10 +39,17 @@ export const parseTitle = (json: JSONContent) =>
     .join("");
 
 export const parseIntro = (json: JSONContent) => {
-  return json.content
-    ?.find((v) => v.type === "paragraph")
-    ?.content?.map((v) => v.text)
-    .join("");
+  // Excerpt = first non-empty paragraph, truncated: the old code returned
+  // the whole first paragraph, so a post whose opening paragraph is one
+  // giant pasted block (e.g. 大汉雄风, ~9700 chars) dumped its full text
+  // onto the homepage instead of a short excerpt.
+  const text = json.content
+    ?.filter((v) => v.type === "paragraph")
+    .map((v) => v.content?.map((n) => n.text).join("") ?? "")
+    .find((t) => t.trim().length > 0);
+  if (!text) return "";
+  const limit = 120;
+  return text.length > limit ? text.slice(0, limit) + "…" : text;
 };
 
 export const toUniqueFilename = (str: string) => slugify(`${Date.now().toString(36)}-${str}`).replace(/%/g, "-");
